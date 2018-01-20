@@ -110,7 +110,9 @@ static INT CFG80211DRV_UpdateApSettingFromBeacon(PRTMP_ADAPTER pAd, UINT mbss_id
 	/* if it doesn't find WPA_IE in tail first 30 bytes. treat it as is not found */
 	wpa_ie = cfg80211_find_ie(CFG_WPA_EID, pBeacon->beacon_tail, pBeacon->beacon_tail_len); 
 	rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, pBeacon->beacon_tail, pBeacon->beacon_tail_len);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0))
 	wmm_ie = cfg80211_find_vendor_ie(WFA_OUI, WMM_OUI_TYPE, pBeacon->beacon_tail, pBeacon->beacon_tail_len);
+#endif
 	ht_cap = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, pBeacon->beacon_tail, pBeacon->beacon_tail_len);
 	ht_info = cfg80211_find_ie(CFG_HT_OP_EID, pBeacon->beacon_tail, pBeacon->beacon_tail_len);
 
@@ -283,10 +285,12 @@ VOID CFG80211_UpdateBeacon(
 	}	 
  
     BeaconTransmit.word = 0;
+#ifdef RT_CFG80211_P2P_SUPPORT
 	/* Should be Find the P2P IE Then Set Basic Rate to 6M */	
 	if (RTMP_CFG80211_VIF_P2P_GO_ON(pAd)) 
 	BeaconTransmit.field.MODE = MODE_OFDM; /* Use 6Mbps */
 	else
+#endif
 		BeaconTransmit.field.MODE = MODE_CCK;	
 	BeaconTransmit.field.MCS = MCS_RATE_6;
 

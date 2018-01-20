@@ -1,5 +1,5 @@
 ifeq ($(WIFI_MODE),)
-RT28xx_MODE = STA
+RT28xx_MODE = AP
 else
 RT28xx_MODE = $(WIFI_MODE)
 endif
@@ -36,7 +36,8 @@ include $(RT28xx_DIR)/os/linux/config.mk
 RTMP_SRC_DIR = $(RT28xx_DIR)/RT$(MODULE)
 
 #PLATFORM: Target platform
-PLATFORM = PC
+#PLATFORM = PC
+PLATFORM = ARM
 #PLATFORM = 5VT
 #PLATFORM = IKANOS_V160
 #PLATFORM = IKANOS_V180
@@ -106,6 +107,11 @@ ifeq ($(TARGET), ECOS)
 MAKE = make
 MODULE = $(shell pwd | sed "s/.*\///" ).o
 export MODULE
+endif
+
+ifeq ($(PLATFORM),ARM)
+LINUX_SRC = /home/ryan/develop/kernel/linux-2.6.35.3
+CROSS_COMPILE = /home/common/cross_compiler/arm-fsl-linux-gnueabi/bin/arm-fsl-linux-gnueabi-
 endif
 
 ifeq ($(PLATFORM),5VT)
